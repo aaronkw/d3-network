@@ -92,7 +92,7 @@ d3.network = function() {
             .links(edges)
             .size([width, height]).start();
 
-        var node_data = selection.selectAll("g.node-group")
+        var node_data = selection.selectAll("g.gene-group")
                 .data(genes, function(d) { return d.id; });
         var link_data = selection.selectAll("line.edge")
                 .data(edges, function(d) { return d.id; });
