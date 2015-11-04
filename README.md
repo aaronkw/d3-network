@@ -55,11 +55,11 @@ Draws the gene network with the gene and edge cutoffs applied by filter().
 
 <a name="width" href="#width">#</a> <b>width</b>(width)
 
-Specifies the width of the network layout. The width and height of this network are applied in d3.force.size([width,height]).
+Specifies the width of the network layout. If no width is specified, the parent svg width is applied. The width and height of this network are applied in d3.force.size([width,height]).
 
 <a name="height" href="#height">#</a> <b>height</b>(height)
 
-Specifies the height of the network layout. The width and height of this network are applied in d3.force.size([width,height]).
+Specifies the height of the network layout. If no height is specified, the parent svg height is applied. The width and height of this network are applied in d3.force.size([width,height]).
 
 <a name="showlegend" href="#showlegend">#</a> <b>showLegend</b>(show)
 
@@ -67,8 +67,8 @@ If <em>show</em> is true or not provided, a legend mapping edge colors to weight
 
 <a name="ongene" href="#ongene">#</a> <b>onGene</b>(type, listener)
 
-Registers the specified <em>listener</em> to receive events of the specified <em>type</em>. Specifying listeners for <em>mouseover</em>, <em>mouseout</em>, <em>mouseclick</em>, <em>mouseout</em> will override the default actions.
+Registers the specified <em>listener</em> to receive events of the specified <em>type</em>. Specifying listeners for <em>mouseover</em>, <em>mouseout</em>, <em>mouseclick</em>, <em>mouseout</em> will override the default actions. To add a listener, specify a suffix to the type, for example, `network.onGene("mouseover.custom", mouseovercustom)`
 
 <a name="onedge" href="#onedge">#</a> <b>onEdge</b>(type, listener)
 
-Registers the specified <em>listener</em> to receive events of the specified <em>type</em>. Specifying listeners for <em>mouseover</em>, <em>mouseout</em> will override the default actions.
+Registers the specified <em>listener</em> to receive events of the specified <em>type</em>. Specifying listeners for <em>mouseover</em> and <em>mouseout</em> will override the default actions.
