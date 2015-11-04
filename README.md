@@ -19,7 +19,7 @@ d3.select("#chart")
 	.attr("width",500)
 	.attr("height",500)
 	.call(network);
-network.filter(.5, 10).draw();
+network.showLegend().filter(.5, 10).draw();
 ```
 
 ## API Reference
@@ -40,6 +40,10 @@ Sets the associated edges to the given array. Provides the same functionality as
 
 Filters the network to be visualized. <em>edge_cutoff</em> specifies the minimum edge weight for an edge to be included in the display. <em>node_cutoff</em> specifies the maximum number of genes to be displayed (beyond any query genes). For example, for a network with 2 query genes and <em>node_cutoff</em>=2, the displayed network will contain 4 genes. Nodes are prioritized by their connectivity to the query genes.
 
+<a name="draw" href="#draw">#</a> <b>draw</b>()
+
+Draws the gene network with the gene and edge cutoffs applied by filter().
+
 <a name="width" href="#width">#</a> <b>width</b>(width)
 
 Specifies the width of the network layout. The width and height of this network are applied in d3.force.size([width,height]).
@@ -48,11 +52,9 @@ Specifies the width of the network layout. The width and height of this network 
 
 Specifies the height of the network layout. The width and height of this network are applied in d3.force.size([width,height]).
 
-
 <a name="showlegend" href="#showlegend">#</a> <b>showLegend</b>(show)
 
-If <em>show</em> is true, a legend mapping edge colors to weights will be drawn when draw() is called.
-
+If <em>show</em> is true or not provided, a legend mapping edge colors to weights will be drawn when draw() is called.
 
 <a name="ongene" href="#ongene">#</a> <b>onGene</b>(type, listener)
 
