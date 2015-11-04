@@ -17,7 +17,6 @@ d3.network = function() {
         genes = [], 
         draw_genes = [],
         draw_edges = [], 
-        node_degrees = [],
         height, 
         width,
         selection,
@@ -37,7 +36,7 @@ d3.network = function() {
 
         var i, 
             n = genes.length, m = edges.length, 
-            node, edge;
+            gene, edge;
 
         // Bind nodes to edges
         for (i = 0; i < m; ++i) {
@@ -48,7 +47,7 @@ d3.network = function() {
 
         // Calculate node degrees to query genes and all genes
         for( i = 0; i < n; i++ ) {
-            gene= genes[i];
+            gene = genes[i];
             gene.query_degree = 0;
             gene.query_degreen = 0;
             gene.degree = 0;
@@ -262,14 +261,14 @@ d3.network = function() {
 
     function linkMouseover(d) {
         d3.select(this).style("stroke-width",12).style("cursor","pointer");
-        var genes = selection.selectAll("circle.node").filter(function(node,i) {
+        var genes = selection.selectAll("circle.gene").filter(function(node,i) {
             return node.id == d.source.id || node.id == d.target.id;
         }).style("stroke-dasharray","6, 3");
     }
 
     function linkMouseout(d) {
         d3.select(this).style("stroke-width", w);
-        var genes = selection.selectAll("circle.node").filter(function(node,i) {
+        var genes = selection.selectAll("circle.gene").filter(function(node,i) {
             return node.id == d.source.id || node.id == d.target.id;
         }).style("stroke-dasharray",null);
     }
