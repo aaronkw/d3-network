@@ -38,17 +38,17 @@ line.edge {
     stroke-opacity: .6;
 }
 
-circle.node {
+circle.gene {
     stroke-width: 2px;
     stroke: #AAA;
     fill: #FFF;
 }
 
-circle.node-query {
+circle.gene-query {
     stroke-width: 3px;
 }
 
-text.node-name {
+text.gene-name {
     font-weight: bold;
 }
 ```

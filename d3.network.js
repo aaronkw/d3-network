@@ -110,7 +110,7 @@ d3.network = function() {
         var node_rm = node_data.exit().remove();
         var node = node_data
                 .enter().append("svg:g")
-                .attr("class", "node-group")
+                .attr("class", "gene-group")
                 .on("mouseover", nodeMouseover)
                 .on("mouseout", nodeMouseout)
                 .on("mouseclick", nodeMouseclick)
@@ -118,13 +118,13 @@ d3.network = function() {
                 .attr("id", function(d) { return d.id; })
 
         node.append("svg:circle")
-            .attr("class", "node")
-            .classed("node-query", function(d) { return d.query; }) 
+            .attr("class", "gene")
+            .classed("gene-query", function(d) { return d.query; }) 
             .attr("r", r); 
 
         node.append("svg:text")
             .style("pointer-events","none")
-            .attr("class", "node-name")
+            .attr("class", "gene-name")
             .text(function(d) {return d.standard_name;})
             .attr("text-anchor", "middle")
             .attr("y", function(d) { return "-"+ (r(d)+5);})
