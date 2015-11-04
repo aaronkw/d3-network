@@ -60,13 +60,13 @@ text.gene-name {
 
 Constructs a new network instance.
 
-<a name="nodes" href="#nodes">#</a> <b>nodes</b>([nodes])
+<a name="genes" href="#genes">#</a> <b>genes</b>([genes])
 
-Sets the associated nodes (genes) to the given array. Provides the same functionality as d3.force.nodes()
+Sets the associated genes to the given array. If <em>genes</em> is not specified, returns the genes associated to the network. Provides the same functionality as d3.force.nodes()
 
 <a name="edges" href="#edges">#</a> <b>edges</b>([edges])
 
-Sets the associated edges to the given array. Provides the same functionality as d3.force.links()
+Sets the associated edges to the given array. If <em>edges</em> is not specified, returns the edges associated to the network. Provides the same functionality as d3.force.links()
 
 <a name="filter" href="#filter">#</a> <b>filter</b>(edge_cutoff, node_cutoff)
 
@@ -78,11 +78,11 @@ Draws the gene network with the gene and edge cutoffs applied by filter().
 
 <a name="width" href="#width">#</a> <b>width</b>(width)
 
-Specifies the width of the network layout. If no width is specified, the parent svg width is applied. The width and height of this network are applied in d3.force.size([width,height]).
+Specifies the width of the network layout. If <em>width</em> is not specified, returns the current width. The default width is the parent svg width. The width and height of this network are applied in d3.force.size([width,height]).
 
 <a name="height" href="#height">#</a> <b>height</b>(height)
 
-Specifies the height of the network layout. If no height is specified, the parent svg height is applied. The width and height of this network are applied in d3.force.size([width,height]).
+Specifies the height of the network layout. If <em>height</em> is not specified, returns the current height. The default height is the parent svg height. The width and height of this network are applied in d3.force.size([width,height]).
 
 <a name="showlegend" href="#showlegend">#</a> <b>showLegend</b>(show)
 
@@ -95,3 +95,15 @@ Registers the specified <em>listener</em> to receive events of the specified <em
 <a name="onedge" href="#onedge">#</a> <b>onEdge</b>(type, listener)
 
 Registers the specified <em>listener</em> to receive events of the specified <em>type</em>. Specifying listeners for <em>mouseover</em> and <em>mouseout</em> will override the default actions.
+
+<a name="edgecolor" href="#edgecolor">#</a> <b>edgeColor</b>(color)
+
+If <em>color</em> is specified, sets the color of an edge to the specified color. If <em>color</em> is not specified, returns the current color function. If <em>color</em> is a function, the function is evaluated for each edge from its weight. 
+
+<a name="edgeWidth" href="#edgewidth">#</a> <b>edgeWidth</b>(edgewidth)
+
+If <em>edgewidth</em> is specified, sets the width of edges to the specified value. If <em>edgewidth</em> is not specified, returns the current edgeWidth function. If <em>edgewidth</em> is a function, the function is evaluated for each edge when determining the stroke-width of an edge.
+
+<a name="generadius" href="#generadius">#</a> <b>geneRadius</b>(generadius)
+
+If <em>generadius</em> is specified, sets the radius of genes to the specified value. If <em>generadius</em> is not specified, returns the current generadius function. If <em>generadius</em> is a function, the function is evaluated for each gene when determining the radius of each node.
