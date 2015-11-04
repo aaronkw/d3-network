@@ -13,6 +13,8 @@ Add the js file:
 <script src="d3.network.js" charset="utf-8"></script>`
 ```
 
+Create the network:
+
 ```js
 var network = d3.network()
 	.genes(data.genes)
