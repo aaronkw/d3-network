@@ -84,6 +84,8 @@ Specifies the width of the network layout. If <em>width</em> is not specified, r
 
 Specifies the height of the network layout. If <em>height</em> is not specified, returns the current height. The default height is the parent svg height. The width and height of this network are applied in d3.force.size([width,height]).
 
+### Visual 
+
 <a name="showlegend" href="#showlegend">#</a> <b>showLegend</b>(show)
 
 If <em>show</em> is true or not provided, a legend mapping edge colors to weights will be drawn when draw() is called.
