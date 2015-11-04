@@ -22,7 +22,8 @@ d3.network = function() {
         selection,
         legend = false,
         edge_events = {},
-        gene_events = {};
+        gene_events = {},
+        event = d3.dispatch("edgeadd", "geneadd");
 
     // Functions for network attributes 
     var r = function(d) {return d.query ? 20 : Math.max(10,5+d.query_degree*10);};
@@ -108,6 +109,7 @@ d3.network = function() {
                 .style("stroke", function(d) {return edgeColor(d.weight);}) 
                 .style("stroke-width", w); 
         for( var type in edge_events ) link.on(type, edge_events[type]);
+        event.edgeadd(link);
 
         var node_rm = node_data.exit().remove();
         var node = node_data
@@ -119,6 +121,7 @@ d3.network = function() {
                 .on("mousedown", nodeMousedown)
                 .attr("id", function(d) { return d.id; })
         for( var type in gene_events ) link.on(type, gene_events[type]);
+        event.geneadd(node);
 
         node.append("svg:circle")
             .attr("class", "gene")
@@ -352,7 +355,7 @@ d3.network = function() {
         d3.select("svg.legend").remove();
     }
 
-    return my;
+    return d3.rebind(my, event, "on");
 } // network
 
 })();

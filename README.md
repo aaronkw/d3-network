@@ -88,6 +88,16 @@ Specifies the height of the network layout. If <em>height</em> is not specified,
 
 If <em>show</em> is true or not provided, a legend mapping edge colors to weights will be drawn when draw() is called.
 
+<a name="on" href="#on">#</a> <b>on</b>(type, listener)
+
+Registers the specified <em>listener</em> to receive custom events of the specified <em>type</em>. Two events are currently supported: <em>geneadd</em> and <em>edgeadd</em>
+
+The <em>geneadd</em> event is dispached when a gene node that was not visible previously is added to the network display. Listeners are called with an array of added genes.
+
+The <em>edgeadd</em> event is dispatched when an edge that was not visible previously is added to the network display. Listeners are called with an array of added edges.
+
+This function is typically used to register tooltip listeners to genes and edges.
+
 <a name="ongene" href="#ongene">#</a> <b>onGene</b>(type, listener)
 
 Registers the specified <em>listener</em> to receive events of the specified <em>type</em>. Specifying listeners for <em>mouseover</em>, <em>mouseout</em>, <em>mouseclick</em>, <em>mouseout</em> will override the default actions. To add a listener, specify a suffix to the type, for example, `network.onGene("mouseover.custom", mouseovercustom)`
