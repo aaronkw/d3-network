@@ -23,8 +23,12 @@ d3.select("#chart")
 	.append("svg")
 	.attr("width",500)
 	.attr("height",500)
-	.call(network);
-network.showLegend().filter(.5, 10).draw();
+	.call(network); // associates network with the svg element but not drawn yet
+			// drawing is delayed so that a filter can be applied - most
+			// likely from a UI element (e.g. slider)
+network.showLegend()
+	.filter(.5, 10)	// a filter is recommended before drawing fully connected networks
+	.draw();
 ```
 
 ## API Reference
