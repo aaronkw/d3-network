@@ -31,6 +31,29 @@ network.showLegend()
 	.draw();
 ```
 
+Customize the network styling:
+
+```css
+line.edge {
+    stroke-opacity: .6; 
+}
+
+circle.node {
+    stroke-width: 2px;
+    stroke: #AAA;
+    fill: #FFF;
+}
+
+circle.node-query {
+    stroke-width: 3px;                                                                                                                                                                        
+}
+
+text.node-name {
+    font-weight: bold;
+}
+```
+
+
 ## API Reference
 
 <a name="network" href="#network">#</a> d3.<b>network</b>()
