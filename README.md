@@ -88,6 +88,20 @@ Specifies the height of the network layout. If <em>height</em> is not specified,
 
 If <em>show</em> is true or not provided, a legend mapping edge colors to weights will be drawn when draw() is called.
 
+<a name="edgecolor" href="#edgecolor">#</a> <b>edgeColor</b>(color)
+
+If <em>color</em> is specified, sets the color of an edge to the specified color. If <em>color</em> is not specified, returns the current color function. If <em>color</em> is a function, the function is evaluated for each edge from its weight. 
+
+<a name="edgeWidth" href="#edgewidth">#</a> <b>edgeWidth</b>(edgewidth)
+
+If <em>edgewidth</em> is specified, sets the width of edges to the specified value. If <em>edgewidth</em> is not specified, returns the current edgeWidth function. If <em>edgewidth</em> is a function, the function is evaluated for each edge when determining the stroke-width of an edge.
+
+<a name="generadius" href="#generadius">#</a> <b>geneRadius</b>(generadius)
+
+If <em>generadius</em> is specified, sets the radius of genes to the specified value. If <em>generadius</em> is not specified, returns the current generadius function. If <em>generadius</em> is a function, the function is evaluated for each gene when determining the radius of each node.
+
+### Events
+
 <a name="on" href="#on">#</a> <b>on</b>(type, listener)
 
 Registers the specified <em>listener</em> to receive custom events of the specified <em>type</em>. Two events are currently supported: <em>geneadd</em> and <em>edgeadd</em>
@@ -106,14 +120,4 @@ Registers the specified <em>listener</em> to receive events of the specified <em
 
 Registers the specified <em>listener</em> to receive events of the specified <em>type</em>. Specifying listeners for <em>mouseover</em> and <em>mouseout</em> will override the default actions.
 
-<a name="edgecolor" href="#edgecolor">#</a> <b>edgeColor</b>(color)
 
-If <em>color</em> is specified, sets the color of an edge to the specified color. If <em>color</em> is not specified, returns the current color function. If <em>color</em> is a function, the function is evaluated for each edge from its weight. 
-
-<a name="edgeWidth" href="#edgewidth">#</a> <b>edgeWidth</b>(edgewidth)
-
-If <em>edgewidth</em> is specified, sets the width of edges to the specified value. If <em>edgewidth</em> is not specified, returns the current edgeWidth function. If <em>edgewidth</em> is a function, the function is evaluated for each edge when determining the stroke-width of an edge.
-
-<a name="generadius" href="#generadius">#</a> <b>geneRadius</b>(generadius)
-
-If <em>generadius</em> is specified, sets the radius of genes to the specified value. If <em>generadius</em> is not specified, returns the current generadius function. If <em>generadius</em> is a function, the function is evaluated for each gene when determining the radius of each node.
