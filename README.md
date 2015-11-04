@@ -12,8 +12,8 @@ Add the js file:
 
 ```js
 var network = d3.network()
-		.genes(data.genes)
-		.edges(data.edges);
+	.genes(data.genes)
+	.edges(data.edges);
 d3.select("#chart")
 	.append("svg")
 	.attr("width",500)
