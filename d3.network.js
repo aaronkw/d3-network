@@ -20,7 +20,9 @@ d3.network = function() {
         height, 
         width,
         selection,
-        legend = false;
+        legend = false,
+        edge_events = {},
+        gene_events = {};
 
     // Functions for network attributes 
     var r = function(d) {return d.query ? 20 : Math.max(10,5+d.query_degree*10);};
@@ -105,6 +107,7 @@ d3.network = function() {
                 .attr("id", function(d) { return d.id; })
                 .style("stroke", function(d) {return edgeColor(d.weight);}) 
                 .style("stroke-width", w); 
+        for( var type in edge_events ) link.on(type, edge_events[type]);
 
         var node_rm = node_data.exit().remove();
         var node = node_data
@@ -112,9 +115,10 @@ d3.network = function() {
                 .attr("class", "gene-group")
                 .on("mouseover", nodeMouseover)
                 .on("mouseout", nodeMouseout)
-                .on("mouseclick", nodeMouseclick)
+                .on("click", nodeMouseclick)
                 .on("mousedown", nodeMousedown)
                 .attr("id", function(d) { return d.id; })
+        for( var type in gene_events ) link.on(type, gene_events[type]);
 
         node.append("svg:circle")
             .attr("class", "gene")
@@ -194,13 +198,13 @@ d3.network = function() {
         return my;
     };
 
-    my.onGene = function(type, action) {
-        selection.selectAll("g.node-group").on(type, action);
+    my.onGene = function(type, listener) {
+        if ( typeof listener == "function" ) gene_events[type] = listener;
         return my;
     };
 
     my.onEdge = function(type, listener) {
-        selection.selectAll("line.edge").on(type, action);
+        if ( typeof listener == "function" ) edge_events[type] = listener;
         return my;
     };
 
