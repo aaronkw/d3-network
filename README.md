@@ -34,4 +34,26 @@ Sets the associated edges to the given array. Provides the same functionality as
 
 <a name="filter" href="#filter">#</a> <b>filter</b>(edge_cutoff, node_cutoff)
 
-Filters the network to be visualized. <em>edge_cutoff</em> specifies the minimum edge weight for an edge to be included in the display. <em>node_cutoff</em> specifies the maximum numver of genes to be displayed (beyond any query genes). Nodes are prioritized by their connectivity to the query genes.
+Filters the network to be visualized. <em>edge_cutoff</em> specifies the minimum edge weight for an edge to be included in the display. <em>node_cutoff</em> specifies the maximum number of genes to be displayed (beyond any query genes). For example, for a network with 2 query genes and <em>node_cutoff</em>=2, the displayed network will contain 4 genes. Nodes are prioritized by their connectivity to the query genes.
+
+<a name="width" href="#width">#</a> <b>width</b>(width)
+
+Specifies the width of the network layout. The width and height of this network are applied in d3.force.size([width,height]).
+
+<a name="height" href="#height">#</a> <b>height</b>(height)
+
+Specifies the height of the network layout. The width and height of this network are applied in d3.force.size([width,height]).
+
+
+<a name="showlegend" href="#showlegend">#</a> <b>showLegend</b>(show)
+
+If <em>show</em> is true, a legend mapping edge colors to weights will be drawn when draw() is called.
+
+
+<a name="ongene" href="#ongene">#</a> <b>onGene</b>(type, listener)
+
+Registers the specified <em>listener</em> to receive events of the specified <em>type</em>. Specifying listeners for <em>mouseover</em>, <em>mouseout</em>, <em>mouseclick</em>, <em>mouseout</em> will override the default actions.
+
+<a name="onedge" href="#onedge">#</a> <b>onEdge</b>(type, listener)
+
+Registers the specified <em>listener</em> to receive events of the specified <em>type</em>. Specifying listeners for <em>mouseover</em>, <em>mouseout</em> will override the default actions.
