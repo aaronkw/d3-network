@@ -35,7 +35,7 @@ Customize the network styling:
 
 ```css
 line.edge {
-    stroke-opacity: .6; 
+    stroke-opacity: .6;
 }
 
 circle.node {
@@ -45,7 +45,7 @@ circle.node {
 }
 
 circle.node-query {
-    stroke-width: 3px;                                                                                                                                                                        
+    stroke-width: 3px;
 }
 
 text.node-name {
