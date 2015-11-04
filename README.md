@@ -14,7 +14,11 @@ Add the js file:
 var network = d3.network()
 		.genes(data.genes)
 		.edges(data.edges);
-d3.select("#chart").append("svg").attr("width",500).attr("height",500).call(network);
+d3.select("#chart")
+	.append("svg")
+	.attr("width",500)
+	.attr("height",500)
+	.call(network);
 network.filter(.5, 10).draw();
 ```
 
