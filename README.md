@@ -8,7 +8,10 @@ The module uses the design pattern suggested by Mike Bostock: http://bost.ocks.o
 
 Add the js file:
 
-<script src="d3.network.js" charset="utf-8"></script>
+
+```html
+<script src="d3.network.js" charset="utf-8"></script>`
+```
 
 ```js
 var network = d3.network()
