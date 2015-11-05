@@ -82,7 +82,7 @@ Specifies the width of the network layout. If <em>width</em> is not specified, r
 
 <a name="height" href="#height">#</a> <b>height</b>(height)
 
-Specifies the height of the network layout. If <em>height</em> is not specified, returns the current height. The default height is the parent svg height. The width and height of this network are applied in d3.force.size([width,height]).
+Specifies the height of the network layout. If <em>height</em> is not specified, returns the current height. The default height is the parent svg height. The width and height of this network are applied in [d3.force.size([width,height])](https://github.com/mbostock/d3/wiki/Force-Layout#size).
 
 ### Visual 
 
@@ -92,7 +92,9 @@ If <em>show</em> is true or not provided, a legend mapping edge colors to weight
 
 <a name="edgecolor" href="#edgecolor">#</a> <b>edgeColor</b>(color)
 
-If <em>color</em> is specified, sets the color of an edge to the specified color. If <em>color</em> is not specified, returns the current color function. If <em>color</em> is a function, the function is evaluated for each edge from its weight. 
+If <em>color</em> is specified, sets the color of an edge to the specified color. If <em>color</em> is not specified, returns the current color function. If <em>color</em> is a function, the function is evaluated for each edge from its weight.
+
+Typically, a d3 [color](https://github.com/mbostock/d3/wiki/Colors) function is applied here.
 
 <a name="edgeWidth" href="#edgewidth">#</a> <b>edgeWidth</b>(edgewidth)
 
