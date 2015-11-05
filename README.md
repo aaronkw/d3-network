@@ -4,7 +4,7 @@ This is a d3-based gene network visualization. The module is a wrapper for a d3 
 
 ## Usage
 
-The module uses the design pattern suggested by Mike Bostock: http://bost.ocks.org/mike/chart/
+The wrapper uses the design pattern suggested by Mike Bostock: http://bost.ocks.org/mike/chart/
 
 Add the js file:
 
