@@ -30,6 +30,7 @@ d3.network = function() {
     var w = function(d) {return Math.max(2,d.weight*6);};
     var edgeColor = d3.scale.linear().domain([options.start_edge,.15,1])
         .range([options.start_color, options.mid_color, options.end_color]);
+    var geneText = function(d) { return d.standard_name; };
 
     function my(_selection) {
         selection = _selection;
@@ -131,7 +132,7 @@ d3.network = function() {
         node.append("svg:text")
             .style("pointer-events","none")
             .attr("class", "gene-name")
-            .text(function(d) {return d.standard_name;})
+            .text(geneText)
             .attr("text-anchor", "middle")
             .attr("y", function(d) { return "-"+ (r(d)+5);})
 
@@ -229,6 +230,13 @@ d3.network = function() {
         if (!arguments.length) return w;
         if ( typeof x == "function" ) w = x;
         else w = function(d) { return x; };
+        return my;
+    };
+
+    my.geneText = function(x) {
+        if (!arguments.length) return geneText;
+        if ( typeof x == "function" ) geneText = x;
+        else geneText = function(d) { return x; };
         return my;
     };
 
