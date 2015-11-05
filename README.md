@@ -89,6 +89,8 @@ Specifies the height of the network layout. If <em>height</em> is not specified,
 
 If <em>genetext</em> is specified, sets the displayed text of genes to the specified string. If <em>genetext</em> is not specified, returns the current geneText function. If <em>genetext</em> is a function, the function is evaluated to obtain the displayed text (e.g. standard_name) for a gene.
 
+By default, the standard_name attribute of a gene object is displayed.
+
 <a name="showlegend" href="#showlegend">#</a> <b>showLegend</b>(show)
 
 If <em>show</em> is true or not provided, a legend mapping edge colors to weights will be drawn when draw() is called.
