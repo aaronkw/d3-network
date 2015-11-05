@@ -94,7 +94,7 @@ If <em>show</em> is true or not provided, a legend mapping edge colors to weight
 
 If <em>color</em> is specified, sets the color of an edge to the specified color. If <em>color</em> is not specified, returns the current color function. If <em>color</em> is a function, the function is evaluated for each edge from its weight.
 
-Typically, a d3 [color](https://github.com/mbostock/d3/wiki/Colors) function is applied here.
+Typically, a d3 [scale](https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear_domain) function is applied here.
 
 <a name="edgeWidth" href="#edgewidth">#</a> <b>edgeWidth</b>(edgewidth)
 
