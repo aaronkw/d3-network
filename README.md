@@ -78,7 +78,7 @@ Draws the gene network with the gene and edge cutoffs applied by filter().
 
 <a name="width" href="#width">#</a> <b>width</b>(width)
 
-Specifies the width of the network layout. If <em>width</em> is not specified, returns the current width. The default width is the parent svg width. The width and height of this network are applied in d3.force.size([width,height]).
+Specifies the width of the network layout. If <em>width</em> is not specified, returns the current width. The default width is the parent svg width. The width and height of this network are applied in [d3.force.size([width,height])](https://github.com/mbostock/d3/wiki/Force-Layout#size).
 
 <a name="height" href="#height">#</a> <b>height</b>(height)
 
