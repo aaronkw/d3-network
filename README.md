@@ -4,7 +4,7 @@ This is a d3-based gene network visualization. The module is a wrapper for a d3 
 
 ## Usage
 
-The module uses the design pattern suggested by Mike Bostock: http://bost.ocks.org/mike/chart/
+The wrapper uses the design pattern suggested by Mike Bostock: http://bost.ocks.org/mike/chart/
 
 Add the js file:
 
@@ -23,7 +23,7 @@ d3.select("#chart")
 	.append("svg")
 	.attr("width",500)
 	.attr("height",500)
-	.call(network); // associates network with the svg element but not drawn yet
+	.call(network); // associates the network with the svg element
 			// drawing is delayed so that a filter can be applied - most
 			// likely from a UI element (e.g. slider)
 network.showLegend()
@@ -85,6 +85,11 @@ Specifies the width of the network layout. If <em>width</em> is not specified, r
 Specifies the height of the network layout. If <em>height</em> is not specified, returns the current height. The default height is the parent svg height. The width and height of this network are applied in [d3.force.size([width,height])](https://github.com/mbostock/d3/wiki/Force-Layout#size).
 
 ### Visual 
+<a name="genetext" href="#genetext">#</a> <b>geneText</b>(genetext)
+
+If <em>genetext</em> is specified, sets the displayed text of genes to the specified string. If <em>genetext</em> is not specified, returns the current geneText function. If <em>genetext</em> is a function, the function is evaluated to obtain the displayed text (e.g. standard_name) for a gene.
+
+By default, the standard_name attribute of a gene object is displayed.
 
 <a name="showlegend" href="#showlegend">#</a> <b>showLegend</b>(show)
 
