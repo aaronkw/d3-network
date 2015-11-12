@@ -84,6 +84,11 @@ Specifies the width of the network layout. If <em>width</em> is not specified, r
 
 Specifies the height of the network layout. If <em>height</em> is not specified, returns the current height. The default height is the parent svg height. The width and height of this network are applied in [d3.force.size([width,height])](https://github.com/mbostock/d3/wiki/Force-Layout#size).
 
+<a name="bind" href="#bind">#</a> <b>bindNetworks</b>([networks])
+
+Binds this network to the input array of networks. The layouts of bound networks will be coordinated and will follow the positions of the first networks <em>networks[0]</em>.
+
+
 ### Visual 
 <a name="genetext" href="#genetext">#</a> <b>geneText</b>(genetext)
 
