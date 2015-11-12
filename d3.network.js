@@ -13,8 +13,10 @@ d3.network = function() {
         mid_color:"#FFFF88",
         end_color:"#FF0000"};
 
-    var edges = [],
+    var force,
+        edges = [],
         genes = [], 
+        gene_map = {},
         draw_genes = [],
         draw_edges = [], 
         height, 
@@ -23,7 +25,9 @@ d3.network = function() {
         legend = false,
         edge_events = {},
         gene_events = {},
-        event = d3.dispatch("edgeadd", "geneadd");
+        bind_networks = [],
+        event = d3.dispatch("edgeadd", "edgeremove", 
+                "geneadd", "generemove", "genechange");
 
     // Functions for network attributes 
     var r = function(d) {return d.query ? 20 : Math.max(10,5+d.query_degree*10);};
@@ -110,7 +114,8 @@ d3.network = function() {
                 .style("stroke", function(d) {return edgeColor(d.weight);}) 
                 .style("stroke-width", w); 
         for( var type in edge_events ) link.on(type, edge_events[type]);
-        event.edgeadd(link);
+        event.edgeadd(link.filter(function(d){return d;}));
+        event.edgeremove(link_rm.filter(function(d){return d;}));
 
         var node_rm = node_data.exit().remove();
         var node = node_data
@@ -122,7 +127,9 @@ d3.network = function() {
                 .on("mousedown", nodeMousedown)
                 .attr("id", function(d) { return d.id; })
         for( var type in gene_events ) link.on(type, gene_events[type]);
-        event.geneadd(node);
+        event.geneadd(node.filter(function(d){return d;}));
+        event.generemove(node_rm.filter(function(d){return d;}));
+        event.genechange(node.filter(function(d){return d;}), node_rm.filter(function(d){return d;}));
 
         node.append("svg:circle")
             .attr("class", "gene")
@@ -132,9 +139,9 @@ d3.network = function() {
         node.append("svg:text")
             .style("pointer-events","none")
             .attr("class", "gene-name")
-            .text(geneText)
             .attr("text-anchor", "middle")
             .attr("y", function(d) { return "-"+ (r(d)+5);})
+            .text(geneText)
 
         node_data.call(force.drag);
 
@@ -144,13 +151,19 @@ d3.network = function() {
                 return d.x = Math.max(r(d),Math.min(width-r(d),d.x)); });
             node_data.attr('cy', function(d) { 
                 return d.y = Math.max(r(d),Math.min(height-r(d),d.y)); });
-
             node_data.attr("transform", function(d,i) { 
+                if ( bind_networks[0] && bind_networks[0].gene(d.id) 
+                        && !isNaN(bind_networks[0].gene(d.id).x)) {
+                    var ref = bind_networks[0].gene(d.id);
+                    d.x = ref.x;
+                    d.px = ref.px;
+                    d.y = ref.y;
+                    d.py = ref.py;
+                }
                 var x = Math.max(r(d),Math.min(width-r(d),d.x));
                 var y = Math.max(r(d),Math.min(height-r(d),d.y)); 
                 return "translate(" + x + "," + y + ")"; 
             });
-
             link_data.attr("x1", function(d) { return d.source.x; })
                 .attr("y1", function(d) { return d.source.y; })
                 .attr("x2", function(d) { return d.target.x; })
@@ -260,10 +273,27 @@ d3.network = function() {
         return my;
     };
 
+    my.bindNetworks = function(x) {
+        if (!arguments.length) return bind_networks;
+        bind_networks = x;
+        return my;
+    };
+
+    my.resume = function() {
+        force.resume();
+    };
+
+    my.gene = function(x) {
+        return gene_map[x];
+    };
+
     my.genes = function(x) {
         if (!arguments.length) return genes;
         genes = x;
         draw_genes = x;
+        for( var i = 0, n = genes.length; i < n; i++ ) { 
+            gene_map[genes[i].id] = genes[i]; 
+        }
         return my;
     };
 
@@ -306,6 +336,15 @@ d3.network = function() {
 
     function nodeMousedown(d) {
         d.fixed = true;
+
+        if ( bind_networks.length ) {
+            var tmp = bind_networks[0];
+            bind_networks[bind_networks.indexOf(my)] = tmp;
+            bind_networks[0] = my;
+            for ( var i=0, n=bind_networks.length; i<n; i++ ) {
+                bind_networks[i].resume();
+            } 
+        }
     }
 
     function addLegend(scale) {
