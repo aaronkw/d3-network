@@ -54,7 +54,7 @@ text.gene-name {
 ```
 ## Examples
 
-[Toy example with styling](https://gist.github.com/aaronkw/5ab0840151369a7217f6f8400f5ca91b) (dongbohu)
+[Toy example with styling](https://bl.ocks.org/aaronkw/5ab0840151369a7217f6f8400f5ca91b) (dongbohu)
 
 ## API Reference
 
