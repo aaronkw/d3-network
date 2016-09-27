@@ -104,6 +104,7 @@ By default, the standard_name attribute of a gene object is displayed.
 If <em>show</em> is true or not provided, a legend mapping edge colors to weights will be drawn when draw() is called.
 
 <a name="legendText" href="#legendText">#</a> <b>legendText</b>(text)
+
 If <em>text</em> is specified, sets the displayed text below the legend gradient. If <em>text</em> is not specified, returns the current legend text.
 
 <a name="edgecolor" href="#edgecolor">#</a> <b>edgeColor</b>(color)
