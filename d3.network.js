@@ -359,9 +359,9 @@ d3.network = function() {
         var svg = selection.append("svg:svg")
             .attr("class","legend")
             .attr("width", width*scale)
-            .attr("height", 35)
+            .attr("height", 55)
             .attr("x", width*(1-scale)*.5)
-            .attr("y", height-40);
+            .attr("y", height-55);
 
         legend = svg.append("svg:defs")
             .append("svg:linearGradient")
@@ -403,6 +403,12 @@ d3.network = function() {
             .attr("x", width*scale*.5 - text.node().getBBox().width/2)
             .text("0.5");
 
+        svg.append("svg:text")
+            .attr("y", 45)
+            .attr("x", width*scale/2)
+            .attr("text-anchor", "middle")
+            .attr("alignment-baseline", "central")
+            .text(legend_text);
     }
 
     function removeLegend() {
