@@ -232,7 +232,7 @@ d3.network = function() {
         return my;
     };
 
-    my.addLegendText = function(x) {
+    my.legendText = function(x) {
         if (!arguments.length) return legend_text;
         legend_text = x;
         return my;
