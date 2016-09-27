@@ -31,7 +31,7 @@ d3.network = function() {
                 "geneadd", "generemove", "genechange");
 
     // Functions for network attributes 
-    var r = function(d) {return d.query ? 20 : Math.max(10,5+d.query_degree*10);};
+    var r = function(d) {return d.query ? 20 : Math.max(10,5+ d.query_degree ? d.query_degree*10 : 10);};
     var w = function(d) {return Math.max(2,d.weight*6);};
     var edgeColor = d3.scale.linear().domain([options.start_edge,.15,1])
         .range([options.start_color, options.mid_color, options.end_color]);
@@ -147,7 +147,6 @@ d3.network = function() {
         node_data.call(force.drag);
 
         force.on("tick", function(event) {
-
             node_data.attr('cx', function(d) { 
                 return d.x = Math.max(r(d),Math.min(width-r(d),d.x)); });
             node_data.attr('cy', function(d) { 

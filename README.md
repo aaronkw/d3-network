@@ -52,7 +52,9 @@ text.gene-name {
     font-weight: bold;
 }
 ```
+## Examples
 
+[Toy example with styling](https://bl.ocks.org/aaronkw/5ab0840151369a7217f6f8400f5ca91b) (dongbohu)
 
 ## API Reference
 
