@@ -55,6 +55,7 @@ text.gene-name {
 ## Examples
 
 [Toy example with styling](https://bl.ocks.org/aaronkw/5ab0840151369a7217f6f8400f5ca91b) (dongbohu)
+[Change legend text](https://bl.ocks.org/aaronkw/d93b1fc0cf8435c8851ad426fec4ec0b)
 
 ## API Reference
 
@@ -101,6 +102,10 @@ By default, the standard_name attribute of a gene object is displayed.
 <a name="showlegend" href="#showlegend">#</a> <b>showLegend</b>(show)
 
 If <em>show</em> is true or not provided, a legend mapping edge colors to weights will be drawn when draw() is called.
+
+<a name="legendText" href="#legendText">#</a> <b>legendText</b>(text)
+
+If <em>text</em> is specified, sets the displayed text below the legend gradient. If <em>text</em> is not specified, returns the current legend text.
 
 <a name="edgecolor" href="#edgecolor">#</a> <b>edgeColor</b>(color)
 
