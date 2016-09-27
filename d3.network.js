@@ -27,6 +27,8 @@ d3.network = function() {
         gene_events = {},
         bind_networks = [],
         legend_text = 'Relationship confidence',
+        legend_start = options.start_edge,
+        legend_end = 1.0,
         event = d3.dispatch("edgeadd", "edgeremove", 
                 "geneadd", "generemove", "genechange");
 
@@ -238,6 +240,18 @@ d3.network = function() {
         return my;
     };
 
+    my.legendStart = function(x) {
+        if (!arguments.length) return legend_start;
+        legend_start = x;
+        return my;
+    }
+
+    my.legendEnd = function(x) {
+        if (!arguments.length) return legend_end;
+        legend_end = x;
+        return my;
+    }
+
     my.geneRadius = function(x) {
         if (!arguments.length) return r;
         if ( typeof x == "function" ) r = x;
@@ -391,17 +405,17 @@ d3.network = function() {
             
         var text = svg.append("svg:text")
             .attr("y", 9)
-            .text(options.start_edge.toFixed(1));
+            .text(legend_start.toFixed(1));
 
         svg.append("svg:text")
             .attr("y", 9)
             .attr("x", width*scale - text.node().getBBox().width)
-            .text("1.0");
+            .text(legend_end.toFixed(1));
 
         svg.append("svg:text")
             .attr("y", 9)
             .attr("x", width*scale*.5 - text.node().getBBox().width/2)
-            .text("0.5");
+            .text(((legend_end+legend_start)/2).toFixed(1));
 
         svg.append("svg:text")
             .attr("y", 45)
