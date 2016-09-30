@@ -8,8 +8,7 @@
 d3.network = function() {
         
     var options = 
-        {start_edge:0,
-        start_color:"#006E2E", 
+        {start_color:"#006E2E", 
         mid_color:"#FFFF88",
         end_color:"#FF0000"};
 
@@ -27,9 +26,8 @@ d3.network = function() {
         gene_events = {},
         bind_networks = [],
         legend_text = 'Relationship confidence',
-        legend_start = options.start_edge,
-        legend_end = 1.0,
-        event = d3.dispatch("edgeadd", "edgeremove", 
+        min_edge = 0,
+        max_edge = 1,event = d3.dispatch("edgeadd", "edgeremove", 
                 "geneadd", "generemove", "genechange");
 
     // Functions for network attributes 
@@ -240,17 +238,17 @@ d3.network = function() {
         return my;
     };
 
-    my.legendStart = function(x) {
-        if (!arguments.length) return legend_start;
-        legend_start = x;
+    my.minEdge = function(x) {
+        if (!arguments.length) return min_edge;
+        min_edge = x;
         return my;
-    }
+    };
 
-    my.legendEnd = function(x) {
-        if (!arguments.length) return legend_end;
-        legend_end = x;
+    my.maxEdge = function(x) {
+        if (!arguments.length) return max_edge;
+        max_edge = x;
         return my;
-    }
+    };
 
     my.geneRadius = function(x) {
         if (!arguments.length) return r;
@@ -390,7 +388,7 @@ d3.network = function() {
             legend.append("svg:stop")
                 .attr("offset", parseInt(i*100)+"%")
                 .style("stop-color", 
-                        edgeColor(options.start_edge + (1-options.start_edge)*i))
+                        edgeColor(min_edge + (max_edge - min_edge)*i))
                 .style("stop-opacity", .9);
         }
 
@@ -405,17 +403,17 @@ d3.network = function() {
             
         var text = svg.append("svg:text")
             .attr("y", 9)
-            .text(legend_start.toFixed(1));
+            .text(min_edge.toFixed(1));
 
         svg.append("svg:text")
             .attr("y", 9)
             .attr("x", width*scale - text.node().getBBox().width)
-            .text(legend_end.toFixed(1));
+            .text(max_edge.toFixed(1));
 
         svg.append("svg:text")
             .attr("y", 9)
             .attr("x", width*scale*.5 - text.node().getBBox().width/2)
-            .text(((legend_end+legend_start)/2).toFixed(1));
+            .text(((max_edge+min_edge)/2).toFixed(1));
 
         svg.append("svg:text")
             .attr("y", 45)
