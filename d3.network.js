@@ -27,7 +27,10 @@ d3.network = function() {
         bind_networks = [],
         legend_text = 'Relationship confidence',
         min_edge = 0,
-        max_edge = 1,event = d3.dispatch("edgeadd", "edgeremove", 
+        max_edge = 1,
+        legendStart = min_edge,
+        legendEnd = max_edge,
+        event = d3.dispatch("edgeadd", "edgeremove", 
                 "geneadd", "generemove", "genechange");
 
     // Functions for network attributes 
@@ -238,6 +241,18 @@ d3.network = function() {
         return my;
     };
 
+    my.legendStart = function(x) {
+        if (!arguments.length) return legend_start;
+        legend_start = x;
+        return my;
+    };
+
+    my.legendEnd = function(x) {
+        if (!arguments.length) return legend_end;
+        legend_end = x;
+        return my;
+    };
+
     my.minEdge = function(x) {
         if (!arguments.length) return min_edge;
         min_edge = x;
@@ -403,17 +418,17 @@ d3.network = function() {
             
         var text = svg.append("svg:text")
             .attr("y", 9)
-            .text(min_edge.toFixed(1));
+            .text(legend_start.toFixed(1));
 
         svg.append("svg:text")
             .attr("y", 9)
             .attr("x", width*scale - text.node().getBBox().width)
-            .text(max_edge.toFixed(1));
+            .text(legend_end.toFixed(1));
 
         svg.append("svg:text")
             .attr("y", 9)
             .attr("x", width*scale*.5 - text.node().getBBox().width/2)
-            .text(((max_edge+min_edge)/2).toFixed(1));
+            .text(((legend_end+legend_start)/2).toFixed(1));
 
         svg.append("svg:text")
             .attr("y", 45)
