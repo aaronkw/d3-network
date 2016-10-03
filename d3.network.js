@@ -130,7 +130,7 @@ d3.network = function() {
                 .on("click", nodeMouseclick)
                 .on("mousedown", nodeMousedown)
                 .attr("id", function(d) { return d.id; })
-        for( var type in gene_events ) link.on(type, gene_events[type]);
+        for( var type in gene_events ) node.on(type, gene_events[type]);
         event.geneadd(node.filter(function(d){return d;}));
         event.generemove(node_rm.filter(function(d){return d;}));
         event.genechange(node.filter(function(d){return d;}), node_rm.filter(function(d){return d;}));
