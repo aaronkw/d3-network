@@ -135,7 +135,7 @@ This function is typically used to register tooltip listeners to genes and edges
 
 <a name="ongene" href="#ongene">#</a> <b>onGene</b>(type, listener)
 
-Registers the specified <em>listener</em> to receive events of the specified <em>type</em>. Specifying listeners for <em>mouseover</em>, <em>mouseout</em>, <em>click</em>, <em>mouseout</em> will override the default actions. To add a listener, specify a suffix to the type, for example, `network.onGene("mouseover.custom", mouseovercustom)`
+Registers the specified <em>listener</em> to receive events of the specified <em>type</em>. Specifying listeners, for example <em>mouseover</em>, <em>mouseout</em>, or <em>click</em> (for more detail and a comprehensive list see: https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#on) will override the default actions. To add a listener, specify a suffix to the type, for example, `network.onGene("mouseover.custom", mouseovercustom)`
 
 <a name="onedge" href="#onedge">#</a> <b>onEdge</b>(type, listener)
 
