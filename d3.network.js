@@ -417,20 +417,24 @@ d3.network = function() {
             .style("stroke-width",1);
             
         var text = svg.append("svg:text")
+            .attr("class", "legend-mark")
             .attr("y", 9)
             .text(legend_start.toFixed(1));
 
         svg.append("svg:text")
+            .attr("class", "legend-mark")
             .attr("y", 9)
             .attr("x", width*scale - text.node().getBBox().width)
             .text(legend_end.toFixed(1));
 
         svg.append("svg:text")
+            .attr("class", "legend-mark")
             .attr("y", 9)
             .attr("x", width*scale*.5 - text.node().getBBox().width/2)
             .text(((legend_end+legend_start)/2).toFixed(1));
 
         svg.append("svg:text")
+            .attr("class", "legend-title")
             .attr("y", 45)
             .attr("x", width*scale/2)
             .attr("text-anchor", "middle")
