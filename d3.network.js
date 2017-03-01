@@ -198,10 +198,10 @@ d3.network = function() {
         var min_edge_cut = argument[0];
         var max_edge_cut;
         if (argument.length === 2) {
-          max_edge_weight = Number.MAX_VALUE;
+            max_edge_weight = Number.MAX_VALUE;
         }
         else {  // argument.length === 3
-          max_edge_weight = argument[1];
+            max_edge_weight = argument[1];
         }
             
         var gene_filter = function(d) {
