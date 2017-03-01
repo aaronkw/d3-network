@@ -187,14 +187,30 @@ d3.network = function() {
         return my;
     };
 
-    my.filter = function(edge_cut, node_cut) {
+    // Supports either: filter(min_edge_cut, node_cut)
+    //              or: filter(min_edge_cut, max_edge_cut, node_cut)
+    my.filter = function() {
+        if (argument.length < 2 || argument > 3) {
+            return;
+        }
+
+        var node_cut = argument[argument.length - 1];
+        var min_edge_cut = argument[0];
+        var max_edge_cut;
+        if (argument.length === 2) {
+          max_edge_weight = Number.MAX_VALUE;
+        }
+        else {  // argument.length === 3
+          max_edge_weight = argument[1];
+        }
+            
         var gene_filter = function(d) {
             return d.query || d.rank < node_cut; 
         };
 
         var edge_filter = function(d) {
-            return d.weight > edge_cut && gene_filter(d.target)
-                    && gene_filter(d.source);
+            return d.weight > min_edge_cut && d.weight < max_edge_cut
+                && gene_filter(d.target) && gene_filter(d.source);
         };
         
         draw_genes = genes.filter(gene_filter);
