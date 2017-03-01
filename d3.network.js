@@ -200,7 +200,7 @@ d3.network = function() {
         if (arguments.length === 2) {
             max_edge_weight = Number.MAX_VALUE;
         }
-        else {  // argument.length === 3
+        else {  // arguments.length === 3
             max_edge_weight = arguments[1];
         }
             
