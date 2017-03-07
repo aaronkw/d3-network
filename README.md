@@ -71,9 +71,10 @@ Sets the associated genes to the given array. If <em>genes</em> is not specified
 
 Sets the associated edges to the given array. If <em>edges</em> is not specified, returns the edges associated to the network. Provides the same functionality as d3.force.links()
 
-<a name="filter" href="#filter">#</a> <b>filter</b>(edge_cutoff, node_cutoff)
+<a name="filter" href="#filter">#</a> <b>filter</b>(min_edge_cutoff, node_cutoff) 
+or <b>filter</b>(min_edge_cutoff, max_edge_cutoff, node_cutoff) 
 
-Filters the network to be visualized. <em>edge_cutoff</em> specifies the minimum edge weight for an edge to be included in the display. <em>node_cutoff</em> specifies the maximum number of genes to be displayed (beyond any query genes). For example, for a network with 2 query genes and <em>node_cutoff</em>=2, the displayed network will contain 4 genes. Nodes are prioritized by their connectivity to the query genes.
+Filters the network to be visualized. <em>min_edge_cutoff</em> specifies the minimum edge weight for an edge to be included in the display. The <b>optional</b> <em>max_edge_cutoff</em> specifies the maximum edge weight for an edge to be included in the display. <em>node_cutoff</em> specifies the maximum number of genes to be displayed (beyond any query genes). For example, for a network with 2 query genes and <em>node_cutoff</em>=2, the displayed network will contain 4 genes. Nodes are prioritized by their connectivity to the query genes.
 
 <a name="draw" href="#draw">#</a> <b>draw</b>()
 
