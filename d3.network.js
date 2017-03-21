@@ -35,7 +35,7 @@ d3.network = function() {
 
     // Functions for network attributes 
     var r = function(d) {return d.query ? 20 : Math.max(10,5+ d.query_degree ? d.query_degree*10 : 10);};
-    var w = function(d) {return Math.max(2,d.weight*6);};
+    var w = function(d) {return Math.max(2, Math.abs(d.weight)*6);};
     var edgeColor = d3.scale.linear().domain([options.start_edge,.15,1])
         .range([options.start_color, options.mid_color, options.end_color]);
     var geneText = function(d) { return d.standard_name; };
@@ -68,15 +68,15 @@ d3.network = function() {
         for( i = 0; i < m; i++ ) {
             edge = edges[i];
             if ( edge.source.query ) {
-                edge.target.query_degree += edge.weight;
+                edge.target.query_degree += Math.abs(edge.weight);
                 edge.target.query_degreen ++;
             }
             if ( edge.target.query ) { 
-                edge.source.query_degree += edge.weight;
+                edge.source.query_degree += Math.abs(edge.weight);
                 edge.source.query_degreen ++;
             }
-            edge.target.degree += edge.weight;
-            edge.source.degree += edge.weight;
+            edge.target.degree += Math.abs(edge.weight);
+            edge.source.degree += Math.abs(edge.weight);
             edge.target.degreen ++;
             edge.source.degreen ++;
         }
@@ -187,49 +187,60 @@ d3.network = function() {
         return my;
     };
 
-    // Supports either: filter(min_edge_cut, node_cut)
-    //              or: filter(min_edge_cut, max_edge_cut, node_cut)
-    my.filter = function() {
-        if (arguments.length < 2 || arguments.length > 3) {
-            return;
-        }
-
-        var node_cut = arguments[arguments.length - 1];
-        var min_edge_cut = arguments[0];
-        var max_edge_cut;
-        if (arguments.length === 2) {
-            max_edge_cut = Number.MAX_VALUE;
-        }
-        else {  // arguments.length === 3
-            max_edge_cut = arguments[1];
-        }
-            
-        var gene_filter = function(d) {
-            return d.query || d.rank < node_cut; 
-        };
-
-        var edge_filter = function(d) {
-            return d.weight > min_edge_cut && d.weight < max_edge_cut
-                && gene_filter(d.target) && gene_filter(d.source);
-        };
-        
-        draw_genes = genes.filter(gene_filter);
-        draw_edges = edges.filter(edge_filter);
-
+    function set_draw_genes() {
         // Remove hanging nodes: calculate node degrees to the filtered edges
-        var n = genes.length, 
-            m = draw_edges.length, 
+        var n = genes.length,
+            m = draw_edges.length,
             edge, i;
         for( i = 0; i < n; i++ ) {
-            genes[i].draw_degree = 0; 
+            genes[i].draw_degree = 0;
         }
         for( i = 0; i < m; i++ ) {
             edge = draw_edges[i];
-            edge.source.draw_degree += edge.weight; 
-            edge.target.draw_degree += edge.weight; 
+            edge.source.draw_degree += Math.abs(edge.weight);
+            edge.target.draw_degree += Math.abs(edge.weight);
         }
-        draw_genes = draw_genes.filter(function(d) { 
+        draw_genes = draw_genes.filter(function(d) {
             return d.draw_degree > 0 || d.query; })
+    }
+
+    my.filter = function(edge_cut, node_cut) {
+        var gene_filter = function(d) {
+            return d.query || d.rank < node_cut;
+        };
+
+        var edge_filter = function(d) {
+            return d.weight > edge_cut && gene_filter(d.target)
+            && gene_filter(d.source);
+        };
+
+        draw_genes = genes.filter(gene_filter);
+        draw_edges = edges.filter(edge_filter);
+        set_draw_genes();
+
+        return my;
+    };
+
+    my.filterEdgeWeight = function(min_edge_cut, max_edge_cut, cmpSign) {
+        var edge_filter = function(d) {
+            var cmpVal;
+            if (!cmpSign) {
+                cmpVal = Math.abs(d.weight);
+            } else if (cmpSign < 0) {
+                cmpVal = -d.weight;
+            }
+            else if (cmpSign > 0) {
+                cmpVal = d.weight;
+            } else {
+                cmpVal = Math.abs(d.weight);
+            }
+
+            return cmpVal > min_edge_cut && cmpVal < max_edge_cut;
+        };
+
+        draw_genes = genes;
+        draw_edges = edges.filter(edge_filter);
+        set_draw_genes();
 
         return my;
     };
