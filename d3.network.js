@@ -223,13 +223,16 @@ d3.network = function() {
 
     my.filterEdgeWeight = function(min_edge_cut, max_edge_cut, cmpSign) {
         var edge_filter = function(d) {
+            if (max_edge_cut < 0) { // Input edge_cut values must be positive
+              return false;
+            }
+
             var cmpVal;
             if (!cmpSign) {
                 cmpVal = Math.abs(d.weight);
             } else if (cmpSign < 0) {
                 cmpVal = -d.weight;
-            }
-            else if (cmpSign > 0) {
+            } else if (cmpSign > 0) {
                 cmpVal = d.weight;
             } else {
                 cmpVal = Math.abs(d.weight);
