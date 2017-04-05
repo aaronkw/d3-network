@@ -6,19 +6,19 @@
 (function() {
 
 d3.network = function() {
-        
-    var options = 
-        {start_color:"#006E2E", 
+
+    var options =
+        {start_color:"#006E2E",
         mid_color:"#FFFF88",
         end_color:"#FF0000"};
 
     var force,
         edges = [],
-        genes = [], 
+        genes = [],
         gene_map = {},
         draw_genes = [],
-        draw_edges = [], 
-        height, 
+        draw_edges = [],
+        height,
         width,
         selection,
         legend = false,
@@ -30,10 +30,10 @@ d3.network = function() {
         max_edge = 1,
         legendStart = min_edge,
         legendEnd = max_edge,
-        event = d3.dispatch("edgeadd", "edgeremove", 
+        event = d3.dispatch("edgeadd", "edgeremove",
                 "geneadd", "generemove", "genechange");
 
-    // Functions for network attributes 
+    // Functions for network attributes
     var r = function(d) {return d.query ? 20 : Math.max(10,5+ d.query_degree ? d.query_degree*10 : 10);};
     var w = function(d) {return Math.max(2, Math.abs(d.weight)*6);};
     var edgeColor = d3.scale.linear().domain([options.start_edge,.15,1])
@@ -46,8 +46,8 @@ d3.network = function() {
         if ( !width ) width = selection.attr("width");
         if ( !height) height = selection.attr("height");
 
-        var i, 
-            n = genes.length, m = edges.length, 
+        var i,
+            n = genes.length, m = edges.length,
             gene, edge;
 
         // Bind nodes to edges
@@ -71,7 +71,7 @@ d3.network = function() {
                 edge.target.query_degree += Math.abs(edge.weight);
                 edge.target.query_degreen ++;
             }
-            if ( edge.target.query ) { 
+            if ( edge.target.query ) {
                 edge.source.query_degree += Math.abs(edge.weight);
                 edge.source.query_degreen ++;
             }
@@ -115,8 +115,8 @@ d3.network = function() {
                 .on("mouseover", linkMouseover)
                 .on("mouseout", linkMouseout)
                 .attr("id", function(d) { return d.id; })
-                .style("stroke", function(d) {return edgeColor(d.weight);}) 
-                .style("stroke-width", w); 
+                .style("stroke", function(d) {return edgeColor(d.weight);})
+                .style("stroke-width", w);
         for( var type in edge_events ) link.on(type, edge_events[type]);
         event.edgeadd(link.filter(function(d){return d;}));
         event.edgeremove(link_rm.filter(function(d){return d;}));
@@ -137,8 +137,8 @@ d3.network = function() {
 
         node.append("svg:circle")
             .attr("class", "gene")
-            .classed("gene-query", function(d) { return d.query; }) 
-            .attr("r", r); 
+            .classed("gene-query", function(d) { return d.query; })
+            .attr("r", r);
 
         node.append("svg:text")
             .style("pointer-events","none")
@@ -150,12 +150,12 @@ d3.network = function() {
         node_data.call(force.drag);
 
         force.on("tick", function(event) {
-            node_data.attr('cx', function(d) { 
+            node_data.attr('cx', function(d) {
                 return d.x = Math.max(r(d),Math.min(width-r(d),d.x)); });
-            node_data.attr('cy', function(d) { 
+            node_data.attr('cy', function(d) {
                 return d.y = Math.max(r(d),Math.min(height-r(d),d.y)); });
-            node_data.attr("transform", function(d,i) { 
-                if ( bind_networks[0] && bind_networks[0].gene(d.id) 
+            node_data.attr("transform", function(d,i) {
+                if ( bind_networks[0] && bind_networks[0].gene(d.id)
                         && !isNaN(bind_networks[0].gene(d.id).x)) {
                     var ref = bind_networks[0].gene(d.id);
                     d.x = ref.x;
@@ -164,18 +164,18 @@ d3.network = function() {
                     d.py = ref.py;
                 }
                 var x = Math.max(r(d),Math.min(width-r(d),d.x));
-                var y = Math.max(r(d),Math.min(height-r(d),d.y)); 
-                return "translate(" + x + "," + y + ")"; 
+                var y = Math.max(r(d),Math.min(height-r(d),d.y));
+                return "translate(" + x + "," + y + ")";
             });
             link_data.attr("x1", function(d) { return d.source.x; })
                 .attr("y1", function(d) { return d.source.y; })
                 .attr("x2", function(d) { return d.target.x; })
                 .attr("y2", function(d) { return d.target.y; });
         });
-    }            
+    }
 
     my.draw = function() {
-        draw(draw_genes, draw_edges); 
+        draw(draw_genes, draw_edges);
         drawn = !selection.select("svg.legend").empty();
         if ( legend && !drawn ) addLegend();
         else if ( !legend && drawn ) removeLegend();
@@ -354,8 +354,8 @@ d3.network = function() {
         if (!arguments.length) return genes;
         genes = x;
         draw_genes = x;
-        for( var i = 0, n = genes.length; i < n; i++ ) { 
-            gene_map[genes[i].id] = genes[i]; 
+        for( var i = 0, n = genes.length; i < n; i++ ) {
+            gene_map[genes[i].id] = genes[i];
         }
         return my;
     };
@@ -384,13 +384,13 @@ d3.network = function() {
     function nodeMouseover(d) {
         selection.selectAll("line.edge").filter(function(edge,i) {
             return ( edge.source.id == d.id || edge.target.id == d.id );
-        }).style("stroke-dasharray","6, 3"); 
+        }).style("stroke-dasharray","6, 3");
     }
 
     function nodeMouseout(d) {
         selection.selectAll("line.edge").filter(function(edge,i) {
             return ( edge.source.id == d.id || edge.target.id == d.id );
-        }).style("stroke-dasharray",null); 
+        }).style("stroke-dasharray",null);
     }
 
     function nodeMouseclick(d) {
@@ -406,7 +406,7 @@ d3.network = function() {
             bind_networks[0] = my;
             for ( var i=0, n=bind_networks.length; i<n; i++ ) {
                 bind_networks[i].resume();
-            } 
+            }
         }
     }
 
@@ -432,7 +432,7 @@ d3.network = function() {
         for ( var i=0; i<1; i+=.05 ) {
             legend.append("svg:stop")
                 .attr("offset", parseInt(i*100)+"%")
-                .style("stop-color", 
+                .style("stop-color",
                         edgeColor(min_edge + (max_edge - min_edge)*i))
                 .style("stop-opacity", .9);
         }
@@ -445,7 +445,7 @@ d3.network = function() {
             .attr("fill", "url(#legend)")
             .style("stroke","#AAA")
             .style("stroke-width",1);
-            
+
         var text = svg.append("svg:text")
             .attr("class", "legend-mark")
             .attr("y", 9)
