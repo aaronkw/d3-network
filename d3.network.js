@@ -36,7 +36,7 @@ d3.network = function() {
     // Functions for network attributes
     var r = function(d) {return d.query ? 20 : Math.max(10,5+ d.query_degree ? d.query_degree*10 : 10);};
     var w = function(d) {return Math.max(2, Math.abs(d.weight)*6);};
-    var edgeColor = d3.scale.linear().domain([options.start_edge,.15,1])
+    var edgeColor = d3.scale.linear().domain([min_edge, .15, max_edge])
         .range([options.start_color, options.mid_color, options.end_color]);
     var geneText = function(d) { return d.standard_name; };
 
