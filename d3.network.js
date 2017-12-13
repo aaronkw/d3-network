@@ -30,15 +30,15 @@ d3.network = function() {
         max_edge = 1,
         edgeLegendStart = min_edge,
         edgeLegendEnd = max_edge,
-        // dhu: variables related to gene color legend bar
+        // Variables related to gene color legend bar:
         geneColorEnabled = false,
         geneLegendText = 'Gene Expression Value',
         min_gene_expr = -1,
         max_gene_expr = 1,
         geneLegendStart = min_gene_expr,
         geneLegendEnd = max_gene_expr,
-        // dhu: flag that indicates whether the background correction
-        // should be applied when the genes are ranked. Default is true.
+        // Flag that indicates whether background correction should be
+        // applied when the genes are ranked. Default is true.
         bgCorrection = true,
 
         event = d3.dispatch("edgeadd", "edgeremove",
@@ -47,11 +47,11 @@ d3.network = function() {
     // Functions for network attributes
     var r = function(d) {return d.query ? 20 : Math.max(10,5+ d.query_degree ? d.query_degree*10 : 10);};
     var w = function(d) {return Math.max(2, Math.abs(d.weight)*6);};
-    var edgeColor = d3.scale.linear().domain([options.start_edge,.15,1])
+    var edgeColor = d3.scale.linear().domain([min_edge, 0.15, max_edge])
         .range([options.start_color, options.mid_color, options.end_color]);
 
-    // dhu: gene circle's color
-    var geneColor = d3.scale.linear().domain([-1, .15, 1])
+    // Gene circle's color
+    var geneColor = d3.scale.linear().domain([min_gene_expr, 0.15, max_gene_expr])
         .range([options.start_color, options.mid_color, options.end_color]);
 
     var geneText = function(d) { return d.standard_name; };
@@ -101,12 +101,23 @@ d3.network = function() {
             genes[i].degree /= genes[i].degreen;
         }
 
-        // Sort nodes according to background corrected degree
-        // Store corresponding ranks
+        // Sort nodes and store corresponding ranks.
+        // Depending on whether bgCorrection flag is set, the sorting may or
+        // may not be done according to the background corrected degree.
+        // -------------------------------------------------------------------
+        // Some genes are connected to many genes, while others may be
+        // connected to few genes.  Without background correction, the network
+        // view prioritizes the genes that are most connected to the query
+        // genes. With the optional background correction step, the network
+        // view prioritizes genes that are more connected to the query genes
+        // than to other genes.
+        // See the following discussion for more details:
+        //   https://github.com/greenelab/adage-server/issues/295
+        // -------------------------------------------------------------------
         if (bgCorrection) {
           genes.sort(function(a,b){return b.query_degree/b.degree
                                    -a.query_degree/a.degree;});
-        } else { // option in greenelab adage-server
+        } else {
           genes.sort(function(a,b){return b.query_degree-a.query_degree;});
         }
         for( i = 0; i < n; i++ ) { genes[i].rank = i; }
@@ -142,7 +153,7 @@ d3.network = function() {
         event.edgeremove(link_rm.filter(function(d){return d;}));
 
         var node_rm = node_data.exit().remove();
-        var node = node_data // dhu: customize node color here!
+        var node = node_data // customize node color here!
                 .enter().append("svg:g")
                 .attr("class", "gene-group")
                 .on("mouseover", nodeMouseover)
@@ -220,7 +231,7 @@ d3.network = function() {
         if (!drawn && edgeLegendEnabled) {
             addEdgeLegend();
         }
-        else if (!edgeLegendEnabled && drawn) {
+        else if (drawn && !edgeLegendEnabled) {
             d3.select("svg.edge-legend").remove();
         }
         // Draw gene legend bar if needed
@@ -228,7 +239,7 @@ d3.network = function() {
         if (!drawn && geneColorEnabled) {
             addGeneLegend();
         }
-        else if (!geneColorEnabled && drawn) {
+        else if (drawn && !geneColorEnabled) {
             d3.select("svg.gene-legend").remove();
         }
     };
@@ -275,8 +286,8 @@ d3.network = function() {
         return my;
     };
 
-    my.filterWithWeightSign = function(min_edge_cut, max_edge_cut, node_cut,
-                                       weightSign) {
+    my.filterWithWeightSign = function(min_edge_cut, max_edge_cut, weightSign,
+                                       node_cut) {
         var gene_filter = function(d) {
             return d.query || d.rank < node_cut;
         };
@@ -365,7 +376,7 @@ d3.network = function() {
         return my;
     };
 
-    // dhu: New function that enables legend bar of gene colors
+    // Function that enables legend bar of gene colors in the network.
     my.showGeneLegend = function(x) {
         if (!arguments.length) {
           x = true;
@@ -373,7 +384,8 @@ d3.network = function() {
         geneColorEnabled = x;
         return my;
     };
-    // dhu: new function to set gene circle's color
+
+    // Function that gets or sets gene circle's color.
     my.geneColor = function(x) {
         if (!arguments.length) {
             return geneColor;
@@ -385,7 +397,8 @@ d3.network = function() {
         }
         return my;
     };
-    // dhu: new function to set the legend bar for gene circle's color
+
+    // Function that gets or sets text of legend bar for gene circle's color.
     my.geneLegendText = function(x) {
         if (!arguments.length) {
             return geneLegendText;
@@ -393,7 +406,9 @@ d3.network = function() {
         geneLegendText = x;
         return my;
     };
-    // dhu: new function to set the legend bar for gene circle's color
+
+    // Function that gets or sets the starting value of legend bar for gene
+    // circle's color.
     my.geneLegendStart = function(x) {
         if (!arguments.length) {
             return geneLegendStart;
@@ -401,7 +416,9 @@ d3.network = function() {
         geneLegendStart = x;
         return my;
     };
-    // dhu: new function to set the legend bar for gene circle's color
+
+    // Function that gets or sets the ending value of legend bar for gene
+    // circle's color.
     my.geneLegendEnd = function(x) {
         if (!arguments.length) {
             return geneLegendEnd;
@@ -409,7 +426,9 @@ d3.network = function() {
         geneLegendEnd = x;
         return my;
     };
-    // dhu: new function to set the legend bar for gene circle's color
+
+    // Function that gets or sets the minimum of gene expression value on
+    // the legend bar for gene circle's color.
     my.minGeneExpr = function(x) {
         if (!arguments.length) {
             return min_gene_expr;
@@ -417,9 +436,13 @@ d3.network = function() {
         min_gene_expr = x;
         return my;
     };
-    // dhu: new function to set the legend bar for gene circle's color
+
+    // Function that gets or sets the maximum of gene expression value on
+    // the legend bar for gene circle's color.
     my.maxGeneExpr = function(x) {
-        if (!arguments.length) return max_gene_expr;
+        if (!arguments.length) {
+            return max_gene_expr;
+        }
         max_gene_expr = x;
         return my;
     };
@@ -489,7 +512,7 @@ d3.network = function() {
         return my;
     };
 
-    // dhu: new function to set the option of background correction.
+    // Function that gets or sets the background correction option.
     my.bgCorrection = function(x) {
         if (!arguments.length) {
           return bgCorrection;
