@@ -5,13 +5,13 @@
   "main": "d3.network.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/greenelab/d3-network.git"
+    "url": "git+https://github.com/aaronkw/d3-network.git"
   },
   "keywords": [],
-  "author": "Aaron Wang, Dongbo Hu",
+  "author": "Aaron Wong, Dongbo Hu",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/greenelab/d3-network/issues"
+    "url": "https://github.com/aaronkw/d3-network/issues"
   },
-  "homepage": "https://github.com/greenelab/d3-network#readme"
+  "homepage": "https://github.com/aaronkw/d3-network#readme"
 }
