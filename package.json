@@ -1,0 +1,17 @@
+{
+  "name": "d3-network",
+  "version": "1.0.0",
+  "description": "This is a d3-based gene network visualization. The module is a wrapper for a d3 force-directed layout but customized for visuzalizing weighted gene networks.",
+  "main": "d3.network.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dongbohu/d3-network.git"
+  },
+  "keywords": [],
+  "author": "Aaron Wang, Dongbo Hu",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/dongbohu/d3-network/issues"
+  },
+  "homepage": "https://github.com/dongbohu/d3-network#readme"
+}
