@@ -221,7 +221,7 @@ d3.network = function() {
             // Aaron Wang's suggestion on how to stop force simulation:
             // https://github.com/greenelab/adage-server/issues/124#issuecomment-298411890
             // After layout, fix all nodes in place:
-            if (!forceSimulation && event.alpha * .99 < .005 && event.alpha > 0 ) {
+            if (!forceSimulation && event.alpha * .99 < .005 && event.alpha > 0) {
               selection.selectAll("circle.gene").each(function(g) {
                   g.fixed = true;
               });
