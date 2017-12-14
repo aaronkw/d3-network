@@ -7,9 +7,8 @@
     "type": "git",
     "url": "git+https://github.com/aaronkw/d3-network.git"
   },
-  "keywords": [],
   "author": "Aaron Wong, Dongbo Hu",
-  "license": "BSD-3-Clause",
+  "license": "BSD 3-Clause",
   "bugs": {
     "url": "https://github.com/aaronkw/d3-network/issues"
   },
