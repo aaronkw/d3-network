@@ -37,6 +37,11 @@ d3.network = function() {
         max_gene_expr = 1,
         geneLegendStart = min_gene_expr,
         geneLegendEnd = max_gene_expr,
+
+        // Flag that indicates whether force simulation will be enabled
+        // when rendering the network. Default is true.
+        forceSimulation = true,
+
         // Flag that indicates whether background correction should be
         // applied when the genes are ranked. Default is true.
         bgCorrection = true,
@@ -216,8 +221,8 @@ d3.network = function() {
             // Aaron Wang's suggestion on how to stop force simulation:
             // https://github.com/greenelab/adage-server/issues/124#issuecomment-298411890
             // After layout, fix all nodes in place:
-            if (event.alpha * .99 < .005 && event.alpha > 0 ) {
-              selection.selectAll("circle.gene").each(function(g){
+            if (!forceSimulation && event.alpha * .99 < .005 && event.alpha > 0 ) {
+              selection.selectAll("circle.gene").each(function(g) {
                   g.fixed = true;
               });
             }
@@ -509,6 +514,15 @@ d3.network = function() {
         if (!arguments.length) return edges;
         edges = x;
         draw_edges = x;
+        return my;
+    };
+
+    // Function that gets or sets the forceSimulation flag.
+    my.forceSimulation = function(x) {
+        if (!arguments.length) {
+          return forceSimulation;
+        }
+        forceSimulation = x;
         return my;
     };
 
