@@ -21,23 +21,44 @@ d3.network = function() {
         height,
         width,
         selection,
-        legend = false,
+        edgeLegendEnabled = false,
         edge_events = {},
         gene_events = {},
         bind_networks = [],
-        legend_text = 'Relationship confidence',
+        edgeLegendText = 'Relationship confidence',
         min_edge = 0,
         max_edge = 1,
-        legendStart = min_edge,
-        legendEnd = max_edge,
+        edgeLegendStart = min_edge,
+        edgeLegendEnd = max_edge,
+        // Variables related to gene color legend bar:
+        geneColorEnabled = false,
+        geneLegendText = 'Gene Expression Value',
+        min_gene_expr = -1,
+        max_gene_expr = 1,
+        geneLegendStart = min_gene_expr,
+        geneLegendEnd = max_gene_expr,
+
+        // Flag that indicates whether force simulation will be enabled
+        // when rendering the network. Default is true.
+        forceSimulation = true,
+
+        // Flag that indicates whether background correction should be
+        // applied when the genes are ranked. Default is true.
+        bgCorrection = true,
+
         event = d3.dispatch("edgeadd", "edgeremove",
                 "geneadd", "generemove", "genechange");
 
     // Functions for network attributes
     var r = function(d) {return d.query ? 20 : Math.max(10,5+ d.query_degree ? d.query_degree*10 : 10);};
     var w = function(d) {return Math.max(2, Math.abs(d.weight)*6);};
-    var edgeColor = d3.scale.linear().domain([min_edge, .15, max_edge])
+    var edgeColor = d3.scale.linear().domain([min_edge, 0.15, max_edge])
         .range([options.start_color, options.mid_color, options.end_color]);
+
+    // Gene circle's color
+    var geneColor = d3.scale.linear().domain([min_gene_expr, 0.15, max_gene_expr])
+        .range([options.start_color, options.mid_color, options.end_color]);
+
     var geneText = function(d) { return d.standard_name; };
 
     function my(_selection) {
@@ -85,10 +106,25 @@ d3.network = function() {
             genes[i].degree /= genes[i].degreen;
         }
 
-        // Sort nodes according to background corrected degree
-        // Store corresponding ranks
-        genes.sort(function(a,b){return b.query_degree/b.degree
-                                        -a.query_degree/a.degree;})
+        // Sort nodes and store corresponding ranks.
+        // Depending on whether bgCorrection flag is set, the sorting may or
+        // may not be done according to the background corrected degree.
+        // -------------------------------------------------------------------
+        // Some genes are connected to many genes, while others may be
+        // connected to few genes.  Without background correction, the network
+        // view prioritizes the genes that are most connected to the query
+        // genes. With the optional background correction step, the network
+        // view prioritizes genes that are more connected to the query genes
+        // than to other genes.
+        // See the following discussion for more details:
+        //   https://github.com/greenelab/adage-server/issues/295
+        // -------------------------------------------------------------------
+        if (bgCorrection) {
+          genes.sort(function(a,b){return b.query_degree/b.degree
+                                   -a.query_degree/a.degree;});
+        } else {
+          genes.sort(function(a,b){return b.query_degree-a.query_degree;});
+        }
         for( i = 0; i < n; i++ ) { genes[i].rank = i; }
     }
 
@@ -122,14 +158,15 @@ d3.network = function() {
         event.edgeremove(link_rm.filter(function(d){return d;}));
 
         var node_rm = node_data.exit().remove();
-        var node = node_data
+        var node = node_data // customize node color here!
                 .enter().append("svg:g")
                 .attr("class", "gene-group")
                 .on("mouseover", nodeMouseover)
                 .on("mouseout", nodeMouseout)
                 .on("click", nodeMouseclick)
                 .on("mousedown", nodeMousedown)
-                .attr("id", function(d) { return d.id; })
+                .attr("id", function(d) { return d.id; });
+
         for( var type in gene_events ) node.on(type, gene_events[type]);
         event.geneadd(node.filter(function(d){return d;}));
         event.generemove(node_rm.filter(function(d){return d;}));
@@ -138,6 +175,15 @@ d3.network = function() {
         node.append("svg:circle")
             .attr("class", "gene")
             .classed("gene-query", function(d) { return d.query; })
+            // Set each gene circle's color based on the gene's "exprVal" property.
+            // If the property is undefined or null, set its color to "gray".
+            .style("fill", function(d) {
+              if (d.exprVal === undefined || d.exprVal === null) {
+                return "#CCCCCC";
+              } else {
+                return geneColor(d.exprVal)
+              }
+            })
             .attr("r", r);
 
         node.append("svg:text")
@@ -171,19 +217,43 @@ d3.network = function() {
                 .attr("y1", function(d) { return d.source.y; })
                 .attr("x2", function(d) { return d.target.x; })
                 .attr("y2", function(d) { return d.target.y; });
+
+            // Aaron Wang's suggestion on how to stop force simulation:
+            // https://github.com/greenelab/adage-server/issues/124#issuecomment-298411890
+            // After layout, fix all nodes in place:
+            if (!forceSimulation && event.alpha * .99 < .005 && event.alpha > 0) {
+              selection.selectAll("circle.gene").each(function(g) {
+                  g.fixed = true;
+              });
+            }
         });
     }
 
     my.draw = function() {
         draw(draw_genes, draw_edges);
-        drawn = !selection.select("svg.legend").empty();
-        if ( legend && !drawn ) addLegend();
-        else if ( !legend && drawn ) removeLegend();
+        // Draw edge legend bar if needed
+        var drawn = !selection.select("svg.edge-legend").empty();
+        if (!drawn && edgeLegendEnabled) {
+            addEdgeLegend();
+        }
+        else if (drawn && !edgeLegendEnabled) {
+            d3.select("svg.edge-legend").remove();
+        }
+        // Draw gene legend bar if needed
+        drawn = !selection.select("svg.gene-legend").empty();
+        if (!drawn && geneColorEnabled) {
+            addGeneLegend();
+        }
+        else if (drawn && !geneColorEnabled) {
+            d3.select("svg.gene-legend").remove();
+        }
     };
 
-    my.showLegend = function(x) {
-        if (!arguments.length) x = true;
-        legend = x;
+    my.showEdgeLegend = function(x) {
+        if (!arguments.length) {
+          x = true;
+        }
+        edgeLegendEnabled = x;
         return my;
     };
 
@@ -221,35 +291,39 @@ d3.network = function() {
         return my;
     };
 
-    my.filterEdgeWeight = function(min_edge_cut, max_edge_cut, cmpSign) {
+    my.filterWithWeightSign = function(min_edge_cut, max_edge_cut, weightSign,
+                                       node_cut) {
+        var gene_filter = function(d) {
+            return d.query || d.rank < node_cut;
+        };
+
         var edge_filter = function(d) {
             if (max_edge_cut < 0) { // Input edge_cut values must be positive
               return false;
             }
 
+            if (!gene_filter(d.target) || !gene_filter(d.source)) {
+              return false;
+            }
+
             var cmpVal;
-            if (!cmpSign) {
+            if (!weightSign) {
                 cmpVal = Math.abs(d.weight);
-            } else if (cmpSign < 0) {
+            } else if (weightSign < 0) {
                 cmpVal = -d.weight;
-            } else if (cmpSign > 0) {
+            } else if (weightSign > 0) {
                 cmpVal = d.weight;
-            } else {
+            } else {  // in case weightSign is not even a valid number
                 cmpVal = Math.abs(d.weight);
             }
 
             return cmpVal > min_edge_cut && cmpVal < max_edge_cut;
         };
 
-        draw_genes = genes;
+        draw_genes = genes.filter(gene_filter);
         draw_edges = edges.filter(edge_filter);
         set_draw_genes();
 
-        return my;
-    };
-
-    my.onGene = function(type, listener) {
-        if ( typeof listener == "function" ) gene_events[type] = listener;
         return my;
     };
 
@@ -265,21 +339,21 @@ d3.network = function() {
         return my;
     };
 
-    my.legendText = function(x) {
-        if (!arguments.length) return legend_text;
-        legend_text = x;
+    my.edgeLegendText = function(x) {
+        if (!arguments.length) return edgeLegendText;
+        edgeLegendText = x;
         return my;
     };
 
-    my.legendStart = function(x) {
-        if (!arguments.length) return legend_start;
-        legend_start = x;
+    my.edgeLegendStart = function(x) {
+        if (!arguments.length) return edgeLegendStart;
+        edgeLegendStart = x;
         return my;
     };
 
-    my.legendEnd = function(x) {
-        if (!arguments.length) return legend_end;
-        legend_end = x;
+    my.edgeLegendEnd = function(x) {
+        if (!arguments.length) return edgeLegendEnd;
+        edgeLegendEnd = x;
         return my;
     };
 
@@ -295,17 +369,93 @@ d3.network = function() {
         return my;
     };
 
-    my.geneRadius = function(x) {
-        if (!arguments.length) return r;
-        if ( typeof x == "function" ) r = x;
-        else r = function(d) { return x; };
-        return my;
-    };
-
     my.edgeWidth = function(x) {
         if (!arguments.length) return w;
         if ( typeof x == "function" ) w = x;
         else w = function(d) { return x; };
+        return my;
+    };
+
+    my.onGene = function(type, listener) {
+        if ( typeof listener == "function" ) gene_events[type] = listener;
+        return my;
+    };
+
+    // Function that enables legend bar of gene colors in the network.
+    my.showGeneLegend = function(x) {
+        if (!arguments.length) {
+          x = true;
+        }
+        geneColorEnabled = x;
+        return my;
+    };
+
+    // Function that gets or sets gene circle's color.
+    my.geneColor = function(x) {
+        if (!arguments.length) {
+            return geneColor;
+        }
+        if (typeof x == "function") {
+            geneColor = x;
+        } else {
+            geneColor = function(d) { return x; };
+        }
+        return my;
+    };
+
+    // Function that gets or sets text of legend bar for gene circle's color.
+    my.geneLegendText = function(x) {
+        if (!arguments.length) {
+            return geneLegendText;
+        }
+        geneLegendText = x;
+        return my;
+    };
+
+    // Function that gets or sets the starting value of legend bar for gene
+    // circle's color.
+    my.geneLegendStart = function(x) {
+        if (!arguments.length) {
+            return geneLegendStart;
+        }
+        geneLegendStart = x;
+        return my;
+    };
+
+    // Function that gets or sets the ending value of legend bar for gene
+    // circle's color.
+    my.geneLegendEnd = function(x) {
+        if (!arguments.length) {
+            return geneLegendEnd;
+        }
+        geneLegendEnd = x;
+        return my;
+    };
+
+    // Function that gets or sets the minimum of gene expression value on
+    // the legend bar for gene circle's color.
+    my.minGeneExpr = function(x) {
+        if (!arguments.length) {
+            return min_gene_expr;
+        }
+        min_gene_expr = x;
+        return my;
+    };
+
+    // Function that gets or sets the maximum of gene expression value on
+    // the legend bar for gene circle's color.
+    my.maxGeneExpr = function(x) {
+        if (!arguments.length) {
+            return max_gene_expr;
+        }
+        max_gene_expr = x;
+        return my;
+    };
+
+    my.geneRadius = function(x) {
+        if (!arguments.length) return r;
+        if ( typeof x == "function" ) r = x;
+        else r = function(d) { return x; };
         return my;
     };
 
@@ -367,6 +517,24 @@ d3.network = function() {
         return my;
     };
 
+    // Function that gets or sets the forceSimulation flag.
+    my.forceSimulation = function(x) {
+        if (!arguments.length) {
+          return forceSimulation;
+        }
+        forceSimulation = x;
+        return my;
+    };
+
+    // Function that gets or sets the background correction option.
+    my.bgCorrection = function(x) {
+        if (!arguments.length) {
+          return bgCorrection;
+        }
+        bgCorrection = x;
+        return my;
+    };
+
     function linkMouseover(d) {
         d3.select(this).style("stroke-width",12).style("cursor","pointer");
         var genes = selection.selectAll("circle.gene").filter(function(node,i) {
@@ -410,19 +578,21 @@ d3.network = function() {
         }
     }
 
-    function addLegend(scale) {
-        if ( ! scale ) scale = .8;
+    function addEdgeLegend(scale) {
+        if (!scale) {
+            scale = .8;
+        }
 
         var svg = selection.append("svg:svg")
-            .attr("class","legend")
+            .attr("class","edge-legend")
             .attr("width", width*scale)
             .attr("height", 55)
             .attr("x", width*(1-scale)*.5)
             .attr("y", height-55);
 
-        legend = svg.append("svg:defs")
+        var edgeLegend = svg.append("svg:defs")
             .append("svg:linearGradient")
-            .attr("id", "legend")
+            .attr("id", "edgelegend")
             .attr("x1","0%")
             .attr("y1","0%")
             .attr("x2","100%")
@@ -430,10 +600,10 @@ d3.network = function() {
             .attr("spreadMethod", "pad");
 
         for ( var i=0; i<1; i+=.05 ) {
-            legend.append("svg:stop")
+            edgeLegend.append("svg:stop")
                 .attr("offset", parseInt(i*100)+"%")
                 .style("stop-color",
-                        edgeColor(min_edge + (max_edge - min_edge)*i))
+                        edgeColor(min_edge + (max_edge - min_edge) * i))
                 .style("stop-opacity", .9);
         }
 
@@ -442,26 +612,26 @@ d3.network = function() {
             .attr("height", 20)
             .attr("y",12)
             .attr("x", 1)
-            .attr("fill", "url(#legend)")
+            .attr("fill", "url(#edgelegend)")
             .style("stroke","#AAA")
             .style("stroke-width",1);
 
         var text = svg.append("svg:text")
             .attr("class", "legend-mark")
             .attr("y", 9)
-            .text(legend_start.toFixed(1));
+            .text(edgeLegendStart.toFixed(1));
 
-        svg.append("svg:text")
+       svg.append("svg:text")
             .attr("class", "legend-mark")
             .attr("y", 9)
             .attr("x", width*scale - text.node().getBBox().width)
-            .text(legend_end.toFixed(1));
+            .text(edgeLegendEnd.toFixed(1));
 
         svg.append("svg:text")
             .attr("class", "legend-mark")
             .attr("y", 9)
             .attr("x", width*scale*.5 - text.node().getBBox().width/2)
-            .text(((legend_end+legend_start)/2).toFixed(1));
+            .text(((edgeLegendStart + edgeLegendEnd) / 2).toFixed(1));
 
         svg.append("svg:text")
             .attr("class", "legend-title")
@@ -469,11 +639,74 @@ d3.network = function() {
             .attr("x", width*scale/2)
             .attr("text-anchor", "middle")
             .attr("alignment-baseline", "central")
-            .text(legend_text);
+            .text(edgeLegendText);
     }
 
-    function removeLegend() {
-        d3.select("svg.legend").remove();
+    // Add legend bar for the color of each gene circle:
+    function addGeneLegend(scale) {
+        if (!scale) {
+          scale = .8;
+        }
+
+        // Put the legend bar at the left side of svg
+        var svg = selection.append("svg:svg")
+            .attr("class","gene-legend")
+            .attr("width", 55)
+            .attr("height", height * scale)
+            .attr("x", 0) // was 10, -10 also works, but -20 doesn't.
+            .attr("y", 40);
+
+        var geneLegend = svg.append("svg:defs")
+            .append("svg:linearGradient")
+            .attr("id", "genelegend")
+            .attr("x1","0%")
+            .attr("y1","100%")
+            .attr("x2","0%")
+            .attr("y2","0%")
+            .attr("spreadMethod", "pad");
+
+        for (var i = 0; i < 1.0; i += 0.05) {
+            geneLegend.append("svg:stop")
+                .attr("offset", parseInt(i*100)+"%")
+                .style("stop-color",
+                       geneColor(min_gene_expr +
+                                 (max_gene_expr - min_gene_expr) * i))
+                .style("stop-opacity", .9);
+        }
+
+        svg.append("svg:rect") // Define a rectangle to wrap geneLegend
+            .attr("width", 15)
+            .attr("height", height * scale - 40)
+            .attr("x", 30) // was 30
+            .attr("y", 30) // was 30
+            .attr("fill", "url(#genelegend)")
+            .style("stroke", "#AAA")
+            .style("stroke-width", 1);
+
+        svg.append("svg:text") // legend mark at the top
+            .attr("class", "legend-mark")
+            .attr("x", 10)
+            .attr("y", 30)
+            .text(geneLegendEnd.toFixed(1));
+
+        svg.append("svg:text") // legend mark at the bottom
+            .attr("class", "legend-mark")
+            .attr("x", 10)
+            .attr("y", height * scale)
+            .text(geneLegendStart.toFixed(1));
+
+        // dx and dy are values of translation in X and Y directions.
+        // When height is 600 and scale is 0.8, dx = -220, dy = 250.
+        var dx = -height * scale / 2 + 20;
+        var dy =  height * scale / 2 + 10;
+        svg.append("svg:text") // title of legend bar
+            .attr("class", "legend-title")
+            .attr("x", 20)
+            .attr("y", height * scale / 2)
+            .attr("text-anchor", "middle")
+            .attr("transform", "translate(" + dx + ", " + dy + ") rotate(-90)")
+            .text(geneLegendText);
+
     }
 
     return d3.rebind(my, event, "on");
